@@ -1,125 +1,58 @@
+# config valid only for Capistrano 3.1
+lock '3.1.0'
 
-# -- SCP
-set :repository, "."
-set :scm, :none 
-set :deploy_via, :copy
+set :application, 'my_app_name'
+set :repo_url, 'git@example.com:me/my_repo.git'
 
-set :user, "admin"
+# Default branch is :master
+# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
-ssh_options[:keys] = [File.join(ENV["HOME"], ".ec2", "gsg-keypair")]
+# Default deploy_to directory is /var/www/my_app
+# set :deploy_to, '/var/www/my_app'
 
-server "ec2-54-214-60-39.us-west-2.compute.amazonaws.com", :web, :app, :db, primary: true 
+# Default value for :scm is :git
+# set :scm, :git
 
-set :application, "geminabox"
+# Default value for :format is :pretty
+# set :format, :pretty
 
+# Default value for :log_level is :debug
+# set :log_level, :debug
 
-# The :deploy_to directory needs to referenced in the following files:
-# /etc/nginx/conf.d/#{application}.conf"
-# /etc/init.d/unicorn-#{application}"
-# config/unicorn.rb
+# Default value for :pty is false
+# set :pty, true
 
-set :deploy_to, "/srv/prod/apps/#{application}"
-set :use_sudo, false
+# Default value for :linked_files is []
+# set :linked_files, %w{config/database.yml}
 
-default_run_options[:pty] = true
-ssh_options[:forward_agent] = true
+# Default value for linked_dirs is []
+# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-after "deploy", "deploy:cleanup" # keep only the last 5 releases
+# Default value for default_env is {}
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+
+# Default value for keep_releases is 5
+# set :keep_releases, 5
 
 namespace :deploy do
 
-  task :setup_http, roles: :app do
-    nginx_path = '/etc/nginx'
-    sudo "ln -nfs #{current_path}/config/nginx.conf #{nginx_path}/sites-available/#{application}"
-    sudo "ln -nfs #{nginx_path}/sites-available/#{application} #{nginx_path}/sites-enabled/#{application}"
-  
-    # Unicorn setup
-    sudo "ln -nfs #{current_path}/config/unicorn_init.sh /etc/init.d/unicorn-#{application}"
-  
-  end
-  #after "deploy:setup", "deploy:setup_http"
-  after "deploy:bundle_install_binstubs", "deploy:setup_http"
-
-
-
-  desc "Restart Application"  
-  task :reload_httpd do  
-    sudo "/etc/init.d/nginx reload"
-    sudo "chmod a+x #{current_path}/config/unicorn_init.sh"
-    sudo "/etc/init.d/unicorn-#{application} restart"
-  end
-  #after :deploy, "deploy:reload_httpd"
-  after "deploy:setup_http", "deploy:reload_httpd"
-
-
-  task :bundle_install_binstubs, roles: :app do
-    run "cd #{release_path} && rvm use system && bundle install --binstubs"
-  end
-  after "deploy", "deploy:bundle_install_binstubs"
-
-
-  desc "Create symlinks for config files and public/uploads"
-  task :symlink_config, roles: :app do
-    run "mkdir -p #{release_path}/config"
-    config_files = %w{ users.htpasswd }
-    config_files.each do |cfg|
-      run "ln -nfs #{shared_path}/config/#{cfg} #{release_path}/config/#{cfg}"
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      # Your restart mechanism here, for example:
+      # execute :touch, release_path.join('tmp/restart.txt')
     end
   end
-  after "deploy:finalize_update", "deploy:symlink_config"
 
+  after :publishing, :restart
 
-end
-
-
-namespace :custom do
-  task :setup_shared, roles: :app do
-    run "mkdir -p #{shared_path}/config"
-    run "mkdir -p #{shared_path}/gems"
-    config_files = %w{ users.htpasswd }
-    config_files.each do |cfg|
-      cfg_file = "config/#{cfg}"
-      upload("shared/#{cfg_file}", "#{shared_path}/#{cfg_file}", via: :scp) #if File.exists? "shared/#{cfg_file}"
+  after :restart, :clear_cache do
+    on roles(:web), in: :groups, limit: 3, wait: 10 do
+      # Here we can do anything such as:
+      # within release_path do
+      #   execute :rake, 'cache:clear'
+      # end
     end
   end
-  before "deploy:setup", "custom:setup_shared"
+
 end
-
-
-=begin
-#!/bin/bash
-
-# ----- Geminabox
-#See: https://dev.tscolari.me/2013/01/08/build-your-own-private-gem-server/
-#See: http://velenux.wordpress.com/2012/01/10/running-sinatra-and-other-rack-apps-on-nginx-unicorn/
-
-
-# run geminabox on an EC2 instance with nginx and unicorn
-# NOTE: requires ruby 1.9.3
-
-# access at http://user:abuser@ec2-54-214-60-39.us-west-2.compute.amazonaws.com/gems/
-
-# install gems
-rvm use system
-gem install geminabox unicorn --no-ri --no-rdoc
-
-# make directories
-mkdir -p /srv/prod/apps/geminabox/current
-mkdir -p /srv/prod/apps/geminabox/shared/gems
-mkdir -p /srv/prod/apps/geminabox/shared/pids
-mkdir -p /srv/prod/apps/geminabox/shared/log
-mkdir -p /srv/prod/apps/geminabox/shared/config
-chown admin.admin /srv/prod/apps/geminabox -R
-
-# copy configuration files
-cp config/* /srv/prod/apps/geminabox/shared/config
-cp current/* /srv/prod/apps/geminabox/current
-
-# Copy nginx config
-cp etc/geminabox /etc/nginx/sites-available
-ln -s /etc/nginx/sites-available/geminabox /etc/nginx/sites-enabled/geminabox
-
-# Copy unicorn startup script
-
-=end
-
