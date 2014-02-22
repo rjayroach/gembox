@@ -11,6 +11,8 @@ namespace :prepare do
     on roles(:all) do
       %w{nginx.conf unicorn_init.sh}.each do |cfg|
         # from local FS (relative to project root) to remote dir
+        execute :mkdir, "-p", "#{shared_path}/config"
+        execute :mkdir, "-p", "#{shared_path}/log"
         upload!("config/deploy/init/#{cfg}", "#{shared_path}/config/#{cfg}")
       end
     end

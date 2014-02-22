@@ -3,11 +3,6 @@ lock '3.1.0'
 
 set :application, 'ngems'
 set :repo_url, 'git@github.com:rjayroach/gembox.git'
-
-# Default branch is :master
-# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
-
-# Default deploy_to directory is /var/www/my_app
 set :deploy_to, "/srv/prod/apps/#{fetch(:application)}"
 
 # Default value for :log_level is :debug
@@ -18,6 +13,7 @@ set :deploy_to, "/srv/prod/apps/#{fetch(:application)}"
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :linked_dirs, %w{bin log tmp vendor/bundle} #public/system public/uploads public/cache}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
