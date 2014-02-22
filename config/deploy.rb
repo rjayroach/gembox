@@ -10,17 +10,8 @@ set :repo_url, 'git@github.com:rjayroach/gembox.git'
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, "/srv/prod/apps/#{fetch(:application)}"
 
-# Default value for :scm is :git
-# set :scm, :git
-
-# Default value for :format is :pretty
-# set :format, :pretty
-
 # Default value for :log_level is :debug
-# set :log_level, :debug
-
-# Default value for :pty is false
-# set :pty, true
+# set :log_level, :info
 
 # Default value for :linked_files is []
 # set :linked_files, %w{config/database.yml}
@@ -33,6 +24,22 @@ set :deploy_to, "/srv/prod/apps/#{fetch(:application)}"
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
+
+# See: https://github.com/capistrano/rbenv
+set :rbenv_type, :user
+set :rbenv_ruby, '1.9.3-p484'
+set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
+set :rbenv_map_bins, %w{rake gem bundle ruby rails}
+set :rbenv_roles, :all # default value
+
+
+set :nginx_etc_path, '/etc/nginx'
+set :initd_path, '/etc/init.d'
+
+# these are read by the custom unicorn tasks defined in
+# lib/capistrano/tasks/unicorn.cap
+set :unicorn_pid, shared_path.join("tmp/unicorn.pid")
+set :unicorn_script, "#{fetch(:initd_path)}/unicorn-#{fetch(:application)}"
 
 namespace :deploy do
 

@@ -6,19 +6,19 @@ worker_processes 2
 preload_app true
 
 working_directory APP_PATH
-listen "unix:/tmp/unicorn.#{APP_NAME}.sock", backlog: 512
+listen "unix:/tmp/unicorn.#{APP_NAME}_private.sock", backlog: 512
 timeout 30
-pid APP_PATH + "/tmp/unicorn.pid"
+pid APP_PATH + "/tmp/unicorn_private.pid"
 
-stderr_path APP_PATH + "/log/unicorn.stderr.log"
-stdout_path APP_PATH + "/log/unicorn.stderr.log"
+stderr_path "#{APP_PATH}/log/unicorn_private.stderr.log"
+stdout_path "#{APP_PATH}/log/unicorn_private.stdout.log"
 
 if GC.respond_to?(:copy_on_write_friendly=)
   GC.copy_on_write_friendly = true
 end
 
 before_fork do |server, worker|
-  old_pid = "#{server.config[:pid]}.oldbin"
+  old_pid = File.join(shared_path, 'pids/unicorn.pid.oldbin')
   if File.exists?(old_pid) && server.pid != old_pid
     begin
       Process.kill("QUIT", File.read(old_pid).to_i)

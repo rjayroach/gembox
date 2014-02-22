@@ -1,0 +1,53 @@
+namespace :unicorn do
+  desc 'Symlink unicorn_init.sh to init.d path'
+  task :symlink do
+    on roles(:all) do
+      execute :chmod, "a+x", "#{shared_path}/config/unicorn_init.sh"
+      execute :sudo, :ln, "-nfs", "#{shared_path}/config/unicorn_init.sh #{fetch(:unicorn_script)}"
+    end
+  end
+
+  desc 'Stop Unicorn'
+  task :stop do
+    on roles(:all) do
+      unless File.exists? fetch(:unicorn_pid)
+        execute "#{fetch(:unicorn_script)} stop"
+      else
+        error 'Unicorn process is not running'
+      end
+    end
+  end
+
+  desc 'Start Unicorn'
+  task :start do
+    on roles(:all) do
+      unless File.exists? fetch(:unicorn_pid)
+        execute "#{fetch(:unicorn_script)} start"
+      else
+        error "Unicorn is already running, stop it first"
+      end
+    end
+  end
+
+  desc 'Reload Unicorn without killing master process'
+  task :reload do
+    on roles(:all) do
+      if File.exists? fetch(:unicorn_pid)
+        execute "#{fetch(:unicorn_script)} restart"
+      else
+        error 'Unicorn process is not running'
+      end
+    end
+  end
+
+  desc 'Restart Unicorn'
+  task :restart do
+    # don't you like this little nugget? If you don't wait here, then the
+    # "stop" is still executing when the call to "start" is sent. Anyway,
+    # should be using reload.
+    sleep 1
+  end
+  before :restart, :stop
+  after :restart, :start
+end
+

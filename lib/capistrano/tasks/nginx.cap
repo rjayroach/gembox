@@ -1,0 +1,20 @@
+namespace :nginx do
+  desc 'Symlink nginx configuration'
+  task :symlink do
+    path = fetch(:nginx_etc_path)
+    on roles(:all) do
+      # See: http://stackoverflow.com/questions/21390146/creating-a-symlink-with-sudo-in-capistrano-3-x
+      execute :sudo, :ln, "-nfs",
+        "#{shared_path}/config/nginx.conf #{path}/sites-available/#{fetch(:application)}"
+      execute :sudo, :ln, "-nfs",
+        "#{path}/sites-available/#{fetch(:application)} #{path}/sites-enabled/#{fetch(:application)}"
+    end
+  end
+
+  desc 'Reload nginx'
+  task :reload do
+    on roles(:all) do
+      execute :sudo, "#{fetch(:initd_path)}/nginx reload"
+    end
+  end
+end

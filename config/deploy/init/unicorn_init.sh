@@ -23,12 +23,15 @@
 
 set -e
 
-UNICORN_USER=admin
-UNICORN_APP_ROOT=/srv/prod/apps/geminabox/current
-UNICORN_APP_SHARED=/srv/prod/apps/geminabox/shared
-UNICORN_PID_FILE=$UNICORN_APP_SHARED/pids/unicorn.pid
-UNICORN_CMD="$UNICORN_APP_ROOT/bin/unicorn -D -E production -c $UNICORN_APP_ROOT/config/unicorn.rb $UNICORN_APP_ROOT/config/rackup.ru"
-#UNICORN_CONFIG_FILE=$UNICORN_APP_ROOT/config/init.conf
+UNICORN_APP=tfg
+RAILS_ENV=staging
+UNICORN_USER=ngems
+
+PATH=/home/$UNICORN_USER/.rbenv/bin:/home/$UNICORN_USER/.rbenv/shims:$PATH
+UNICORN_APP_ROOT=/srv/prod/apps/$UNICORN_APP/current
+UNICORN_PID_FILE=$UNICORN_APP_ROOT/tmp/unicorn.pid
+UNICORN_CMD="$UNICORN_APP_ROOT/bin/unicorn -D -E $RAILS_ENV -c $UNICORN_APP_ROOT/config/unicorn.rb"
+
 UNICORN_TIMEOUT=${TIMEOUT-60}
 KILL=/bin/kill
 action=""
