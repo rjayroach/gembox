@@ -7,9 +7,9 @@ Gem::Specification.new do |gem|
   gem.name          = "gembox"
   gem.version       = Gembox::VERSION
   gem.authors       = ["Robert Roach"]
-  gem.email         = ["TODO: Write your email address"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.email         = ["rjayroach@gmail.com"]
+  gem.description   = %q{A gem server}
+  gem.summary       = %q{Host a public and private Gem server}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
