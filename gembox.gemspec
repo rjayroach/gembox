@@ -7,13 +7,18 @@ Gem::Specification.new do |gem|
   gem.name          = "gembox"
   gem.version       = Gembox::VERSION
   gem.authors       = ["Robert Roach"]
-  gem.email         = ["TODO: Write your email address"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.email         = ["rjayroach@gmail.com"]
+  gem.description   = %q{A gem server}
+  gem.summary       = %q{Host a public and private Gem server}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
+
+  gem.add_development_dependency 'capistrano'
+  gem.add_dependency 'sinatra'
+  gem.add_dependency 'geminabox'
+  gem.add_dependency 'unicorn'
 end

@@ -23,12 +23,18 @@
 
 set -e
 
-UNICORN_USER=admin
-UNICORN_APP_ROOT=/srv/prod/apps/geminabox/current
-UNICORN_APP_SHARED=/srv/prod/apps/geminabox/shared
-UNICORN_PID_FILE=$UNICORN_APP_SHARED/pids/unicorn.pid
+UNICORN_APP=ngems
+RAILS_ENV=staging
+UNICORN_USER=ngems
+
+PATH=/home/$UNICORN_USER/.rbenv/bin:/home/$UNICORN_USER/.rbenv/shims:$PATH
+UNICORN_APP_ROOT=/srv/prod/apps/$UNICORN_APP/current
+UNICORN_PID_FILE=$UNICORN_APP_ROOT/tmp/unicorn.pid
 UNICORN_CMD="$UNICORN_APP_ROOT/bin/unicorn -D -E production -c $UNICORN_APP_ROOT/config/unicorn.rb $UNICORN_APP_ROOT/config/rackup.ru"
-#UNICORN_CONFIG_FILE=$UNICORN_APP_ROOT/config/init.conf
+
+UNICORN_PID_FILE_PRIVATE=$UNICORN_APP_ROOT/tmp/unicorn_private.pid
+UNICORN_CMD_PRIVATE="$UNICORN_APP_ROOT/bin/unicorn -D -E production -c $UNICORN_APP_ROOT/config/unicorn_private.rb $UNICORN_APP_ROOT/config/rackup_private.ru"
+
 UNICORN_TIMEOUT=${TIMEOUT-60}
 KILL=/bin/kill
 action=""
@@ -58,6 +64,7 @@ case "$1" in
 start)
   sig 0 && echo >&2 "Already running" && exit 0
   run "$UNICORN_CMD"
+  run "$UNICORN_CMD_PRIVATE"
   ;;
 stop)
   sig QUIT && exit 0
@@ -70,6 +77,7 @@ force-stop)
 restart|reload)
   sig HUP && echo reloaded OK && exit 0
   echo >&2 "Couldn't reload, starting '$UNICORN_CMD' instead"
+  echo >&2 "Couldn't reload, starting '$UNICORN_CMD_PRIVATE' instead"
   run ""
   ;;
 upgrade)
@@ -90,7 +98,9 @@ upgrade)
     exit 0
   fi
   echo >&2 "Couldn't upgrade, starting '$UNICORN_CMD' instead"
+  echo >&2 "Couldn't upgrade, starting '$UNICORN_CMD_PRIVATE' instead"
   run "$UNICORN_CMD"
+  run "$UNICORN_CMD_PRIVATE"
   ;;
 reopen-logs)
   sig USR1
