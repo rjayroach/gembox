@@ -5,7 +5,7 @@ require "geminabox"
 Geminabox.build_legacy = false
 Geminabox.rubygems_proxy = true
 
-Geminabox.data = "/srv/prod/apps/gembox/shared/gems/public"
+Geminabox.data = "/srv/apps/gembox/shared/gems/public"
 
 
 Geminabox::Server.helpers do

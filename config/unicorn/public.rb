@@ -15,6 +15,7 @@ pid APP_PATH + "/tmp/unicorn.pid"
 stderr_path "#{APP_PATH}/log/unicorn_public.stderr.log"
 stdout_path "#{APP_PATH}/log/unicorn_public.stdout.log"
 
+preload_app true
 if GC.respond_to?(:copy_on_write_friendly=)
   GC.copy_on_write_friendly = true
 end

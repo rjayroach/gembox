@@ -15,12 +15,13 @@ pid APP_PATH + "/tmp/unicorn_private.pid"
 stderr_path "#{APP_PATH}/log/unicorn_private.stderr.log"
 stdout_path "#{APP_PATH}/log/unicorn_private.stdout.log"
 
+preload_app true
 if GC.respond_to?(:copy_on_write_friendly=)
   GC.copy_on_write_friendly = true
 end
 
 before_fork do |server, worker|
-  old_pid = File.join(shared_path, 'pids/unicorn.pid.oldbin')
+  old_pid = "#{server.config[:pid]}.oldbin"
   if File.exists?(old_pid) && server.pid != old_pid
     begin
       Process.kill("QUIT", File.read(old_pid).to_i)
@@ -29,4 +30,3 @@ before_fork do |server, worker|
     end
   end
 end
-

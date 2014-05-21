@@ -1,7 +1,6 @@
 set :stage, :production
 
-#server 'rubygems.maxcole.com',
-server 'staging.maxcole.com',
+server 'rubygems.maxcole.com',
   user: fetch(:application),
   roles: %w{web app db},
   ssh_options: {
