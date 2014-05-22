@@ -13,7 +13,8 @@ set :log_level, :info
 set :linked_files, %w{.env}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log tmp tmp/pids vendor/bundle gems/public gems/private}
+#set :linked_dirs, %w{bin log tmp tmp/pids vendor/bundle gems/public gems/private}
+set :linked_dirs, %w{bin log tmp vendor/bundle gems/public gems/private}
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5

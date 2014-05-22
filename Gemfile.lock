@@ -2,19 +2,21 @@ PATH
   remote: .
   specs:
     gembox (0.0.1)
+      dotenv
       dotenv-deployment
       geminabox
       sinatra
       unicorn
 
 GEM
-  remote: http://rubygems.maxcole.com/
+  remote: https://rubygems.org/
   specs:
     builder (3.2.2)
     capistrano (3.2.1)
       i18n
       rake (>= 10.0.0)
       sshkit (~> 1.3)
+    dotenv (0.7.0)
     dotenv-deployment (0.0.2)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
