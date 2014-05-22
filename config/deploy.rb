@@ -24,7 +24,8 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      execute :kill, "--signal USR2 $(<\"#{release_path.join('tmp/pids/unicorn.pid')}\")"
+      execute :kill, "--signal USR2 $(<\"#{release_path.join('tmp/pids/unicorn_private.pid')}\")"
+      execute :kill, "--signal USR2 $(<\"#{release_path.join('tmp/pids/unicorn_public.pid')}\")"
     end
   end
 
