@@ -1,5 +1,4 @@
 set :stage, :production
-set :branch, 'dotenv'
 
 server 'rubygems.maxcole.com',
   user: fetch(:application),
