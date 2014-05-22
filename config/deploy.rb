@@ -1,4 +1,4 @@
-# config valid only for Capistrano 3.1
+# config valid only for Capistrano 3.2.1
 lock '3.2.1'
 
 set :application, 'gembox'
@@ -7,30 +7,16 @@ set :deploy_to, "/srv/apps/#{fetch(:application)}"
 set :branch, 'master'
 
 # Default value for :log_level is :debug
-# set :log_level, :info
+set :log_level, :info
 
 # Default value for :linked_files is []
 set :linked_files, %w{.env}
 
 # Default value for linked_dirs is []
-# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
-set :linked_dirs, %w{bin log tmp vendor/bundle gems/public gems/private} #public/system public/uploads public/cache}
-
-# Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :linked_dirs, %w{bin log tmp tmp/pids vendor/bundle gems/public gems/private}
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
-
-
-
-#set :nginx_etc_path, '/etc/nginx'
-#set :initd_path, '/etc/init.d'
-
-# these are read by the custom unicorn tasks defined in
-# lib/capistrano/tasks/unicorn.cap
-#set :unicorn_pid, shared_path.join("tmp/unicorn.pid")
-#set :unicorn_script, "#{fetch(:initd_path)}/unicorn-#{fetch(:application)}"
 
 namespace :deploy do
 
@@ -42,6 +28,8 @@ namespace :deploy do
   end
 
   after :publishing, :restart
+
+  after :finishing, "deploy:cleanup"
 
   # See: https://github.com/capistrano/rbenv
   set :rbenv_type, :user
