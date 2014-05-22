@@ -21,4 +21,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'sinatra'
   gem.add_dependency 'geminabox'
   gem.add_dependency 'unicorn'
+  gem.add_dependency 'dotenv-deployment'
 end
