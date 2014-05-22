@@ -10,7 +10,7 @@ working_directory APP_PATH
 listen "unix:#{SOCKET_NAME}", backlog: 512
 timeout 30
 
-pid APP_PATH + "/tmp/pids/unicorn.pid"
+pid APP_PATH + "/tmp/pids/unicorn_public.pid"
 
 stderr_path "#{APP_PATH}/log/unicorn_public.stderr.log"
 stdout_path "#{APP_PATH}/log/unicorn_public.stdout.log"
