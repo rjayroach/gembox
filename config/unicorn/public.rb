@@ -8,7 +8,7 @@ preload_app true
 
 working_directory APP_PATH
 listen "unix:#{SOCKET_NAME}", backlog: 512
-timeout 30
+timeout 90
 
 pid APP_PATH + "/tmp/pids/unicorn_public.pid"
 
