@@ -5,9 +5,9 @@ require "geminabox"
 Geminabox.build_legacy = false
 Geminabox.rubygems_proxy = true
 
-Geminabox.data = "/srv/apps/gembox/shared/gems/public"
+Geminabox.data = "/data"
 
-
+=begin
 Geminabox::Server.helpers do
   def protected!
     unless authorized?
@@ -35,6 +35,7 @@ Geminabox::Server.before '/api/v1/gems' do
     halt 401, "Access Denied. Api_key invalid or missing.\n"
   end
 end
+=end
 
 run Geminabox::Server
 
