@@ -24,6 +24,7 @@ tell bundler to override rubygems to point to the local container
 
 ```bash
 bundle config mirror.https://rubygems.org http://localhost:9000
+bundle config localhost:9000 claudette:s00pers3krit
 ```
 
 If you're building containers and want to use the local cache, then add to Dockerfile
