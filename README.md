@@ -1,24 +1,33 @@
 # Gembox
 
+Run a local Rubygems cache as a docker container
+
+
 TODO: Write a gem description
 
 ## Installation
 
-Add this line to your application's Gemfile:
+install docker v1.5 or higher
+clone this repository
 
-    gem 'gembox'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install gembox
+```bash
+docker-compose build
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+```bash
+docker-compose up
+```
+
+tell bundler to override rubygems to point to the local container
+
+```bash
+bundle config mirror.https://rubygems.org http://localhost:9000
+```
+
+If you're building containers and want to use the local cache, then add to Dockerfile
+RUN bundle config mirror.https://rubygems.org http://172.17.42.1:9000
 
 ## Contributing
 
