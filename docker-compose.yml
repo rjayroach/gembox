@@ -1,0 +1,9 @@
+web:
+  environment:
+    SOME_VAR: test
+  build: .
+  command: bundle exec rackup -p 9000 public.ru -o 0.0.0.0
+  volumes:
+    - data:/data
+  ports:
+    - "9000:9000"
