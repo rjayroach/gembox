@@ -11,16 +11,18 @@ install docker v1.5 or higher
 clone this repository
 
 ```bash
-docker-compose build
+docker build -t rjayroach/gembox .
+docker push rjayroach/gembox
 ```
 
 ## Usage
 
 ```bash
-docker-compose up
+docker pull rjayroach/gembox
+docker run -p 9000:9000 -v /data:/data rjayroach/gembox
 ```
 
-tell bundler to override rubygems to point to the local container
+- Tell bundler to override rubygems to point to the local container
 
 ```bash
 bundle config mirror.https://rubygems.org http://localhost:9000
